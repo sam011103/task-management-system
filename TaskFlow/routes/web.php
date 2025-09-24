@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\TaskController;
+use App\Http\Controllers\PriorityListController;
 use Inertia\Inertia;
 
 Route::get('/', function () {
@@ -18,7 +19,14 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/tasks', [TaskController::class, 'store'])->name('tasksStore');
     Route::get('/tasks/{task}/edit', [TaskController::class, 'edit'])->name('tasksEdit');
     Route::put('/tasks/{task}', [TaskController::class, 'update'])->name('tasksUpdate');
+    Route::delete('/tasks/{task}', [TaskController::class, 'destroy'])->name('tasksDestroy');
 
+    Route::get('/priorityList', [PriorityListController::class, 'index'])->name('priorityListIndex');
+    // Route::get('/priorityLists/{priorityList}', [PriorityListController::class, 'show'])->name('priorityListsShow');
+    Route::post('/priorityList', [PriorityListController::class, 'store'])->name('priorityListCreate');
+
+    Route::delete('/priorityList/item/{item}', [PriorityListController::class, 'destroyItem'])->name('PriorityItemDestroy');
+   
     Route::get('/performance', function () {
         return Inertia::render('performance');
     })->name('performance');

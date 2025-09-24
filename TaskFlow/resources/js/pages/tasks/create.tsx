@@ -64,27 +64,43 @@ export default function Create() {
                                         />
                                         <InputError message={errors.description} />
                                     </div>
-                                    <div className="grid grid-cols-2 gap-4">
-                                        <div className="grid gap-2">
-                                            <Label htmlFor="description">Time Estimate(Hours)</Label>
+                                    <div className='grid gap-2'>
+                                    <Label htmlFor="description">Time Estimate</Label>
+                                        <div className="flex gap-2 items-center">
+                                            
                                             <Input
-                                                id="timeEstimate"
-                                                name="time_estimate"
+                                                id="hourEstimate"
+                                                name="hour_estimate"
                                                 type="number"
-                                                step="0.5"
-                                                min="0.5"
+                                                step="1"
+                                                min="0"
+                                                defaultValue={0}
                                                 required
                                                 tabIndex={2}
                                                 autoComplete="timeEstimate"
                                                 placeholder="1"
-                                            />
-                                            <InputError message={errors.time_estimate} />
+                                            /> hour(s)
+                                            <InputError message={errors.hour_estimate} />
+                                            <Input
+                                                id="minuteEstimate"
+                                                name="minute_estimate"
+                                                type="number"
+                                                step="15"
+                                                max="45"
+                                                defaultValue={0}
+                                                required
+                                                tabIndex={2}
+                                                autoComplete="timeEstimate"
+                                            />minute(s)
+                                            <InputError message={errors.minute_estimate} />
                                         </div>
-                                        <div className="grid gap-2">
-                                            <Label htmlFor='priority'>Priority</Label>
+                                        
+                                    </div>
+                                    <div className="grid gap-2">
+                                            <Label htmlFor='importance_level'>Importance Level</Label>
                                             <select
-                                                id="priority"
-                                                name="priority"
+                                                id="importance_level"
+                                                name="importance_level"
                                                 required
                                                 tabIndex={2}
                                                 className="rounded-md border border-input bg-background px-3 py-2 text-sm shadow-sm placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
@@ -97,7 +113,6 @@ export default function Create() {
                                                 <option value="very high">Very High</option>
                                             </select>
                                         </div>
-                                    </div>
                                     <div className="grid grid-cols-2 gap-4">
                                         <div className="grid gap-2">
                                             <Label htmlFor="dueDate">Due Date</Label>
@@ -123,10 +138,10 @@ export default function Create() {
                                             <InputError message={errors.due_time} />
                                         </div>
                                     </div>
-                                    <div className="flex items-center space-x-2">
+                                    {/* <div className="flex items-center space-x-2">
                                         <Checkbox id="completed" name="completed" tabIndex={5} />
                                         <Label htmlFor="completed" className="mb-0">Mark as Completed</Label>
-                                    </div>
+                                    </div> */}
                                 </div>
     
                                 <div className="flex items-center justify-end gap-4">

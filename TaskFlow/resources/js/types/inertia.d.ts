@@ -5,6 +5,7 @@ declare module '@inertiajs/core' {
     flash?: {
       success?: string;
       error?: string;
+      showDialog?: boolean;
     };
   }
 }

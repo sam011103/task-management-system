@@ -22,9 +22,10 @@ interface Task {
     status: string;
     due_date: string | null;
     due_time: string | null;
-    time_estimate: number;
+    hour_estimate: number;
+    minute_estimate: number;
     progress: number;
-    priority: string;
+    importance_level: string;
 }
 
 interface Props extends PageProps {
@@ -48,8 +49,9 @@ export default function Edit({task}: Props) {
         description: task.description ?? '',
         status: task.status ?? 'not_started',
         progress: task.progress ?? 0,
-        time_estimate: task.time_estimate ?? 1,
-        priority: task.priority ?? 'normal',
+        hour_estimate: task.hour_estimate ?? 1,
+        minute_estimate: task.minute_estimate ?? 1,
+        importance_level: task.importance_level ?? 'normal',
         due_date: task.due_date ?? '',
         due_time: task.due_time ?? '',
     })
@@ -61,7 +63,7 @@ export default function Edit({task}: Props) {
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
-            <Head title={task.title} />
+            <Head title="Edit Task" />
             <FormCard title="Edit Task">
                 <form onSubmit={submit} className="flex flex-col gap-6 px-6">
                     <div className="grid gap-6">
@@ -93,41 +95,57 @@ export default function Edit({task}: Props) {
                             />
                             <InputError message={errors.description} />
                         </div>
-                        <div className="grid grid-cols-2 gap-4">
-                            <div className="grid gap-2">
-                                <Label htmlFor="description">Time Estimate(Hours)</Label>
+                        <div className='grid gap-2'>
+                            <Label htmlFor="description">Time Estimate</Label>
+                            <div className="flex gap-2 items-center">
+                            
                                 <Input
-                                    id="timeEstimate"
-                                    name="time_estimate"
+                                    id="hourEstimate"
+                                    name="hour_estimate"
                                     type="number"
-                                    step="0.5"
-                                    min="0.5"
+                                    step="1"
+                                    min="0"
+                                    value={data.hour_estimate}
+                                    onChange={(e) => setData('hour_estimate', Number(e.target.value))}
                                     required
                                     tabIndex={2}
-                                    value={data.time_estimate}
-                                    onChange={(e) => setData('time_estimate', parseFloat(e.target.value))}
-                                    placeholder="1"
+                                    autoComplete="timeEstimate"
+                                /> 
+                                hour(s)
+                                <InputError message={errors.hour_estimate} />
+                                <Input
+                                    id="minuteEstimate"
+                                    name="minute_estimate"
+                                    type="number"
+                                    step="15"
+                                    min="0"
+                                    max="45"
+                                    value={data.minute_estimate}
+                                    onChange={(e) => setData('minute_estimate', Number(e.target.value))}
+                                    required
+                                    tabIndex={2}
+                                    autoComplete="timeEstimate"
                                 />
-                                <InputError message={errors.time_estimate} />
+                                minute(s)
+                                <InputError message={errors.minute_estimate} />
                             </div>
-                            <div className="grid gap-2">
-                                <Label htmlFor='priority'>Priority</Label>
-                                <select
-                                    id="priority"
-                                    name="priority"
-                                    required
-                                    tabIndex={2}
-                                    className="rounded-md border border-input bg-background px-3 py-2 text-sm shadow-sm placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                                    value={data.priority}
-                                    onChange={(e) => setData('priority', e.target.value)}
-                                >
-                                    <option value="very low">Very Low</option>
-                                    <option value="low">Low</option>
-                                    <option value="medium">Medium</option>
-                                    <option value="high">High</option>
-                                    <option value="very high">Very High</option>
-                                </select>
-                            </div>
+                        </div>
+                        <div className="grid gap-2">
+                            <Label htmlFor='importance_level'>Importance Level</Label>
+                            <select
+                                id="importance_level"
+                                name="importance_level"
+                                required
+                                tabIndex={2}
+                                className="rounded-md border border-input bg-background px-3 py-2 text-sm shadow-sm placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                                onChange={(e) => setData('importance_level', e.target.value)}
+                            >
+                                <option value="very low">Very Low</option>
+                                <option value="low">Low</option>
+                                <option value="medium">Medium</option>
+                                <option value="high">High</option>
+                                <option value="very high">Very High</option>
+                            </select>
                         </div>
                         <div className="grid grid-cols-2 gap-4">
                             <div className="grid gap-2">

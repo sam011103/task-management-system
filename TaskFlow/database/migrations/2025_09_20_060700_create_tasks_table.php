@@ -15,12 +15,14 @@ return new class extends Migration
             $table->id();
             $table->string('title');
             $table->text('description')->nullable();
-            $table->double('time_estimate'); // in hours
-            $table->enum('priority', ['very low', 'low', 'medium', 'high', 'very high']);
-            $table->date('due_date')->nullable();
-            $table->time('due_time')->nullable();
-            $table->enum('status', ['not started', 'in progress', 'completed'])->default('not started');
+            $table->integer('time_estimate'); // in minutes
+            $table->integer('time_remaining');
+            $table->enum('importance_level', ['very low', 'low', 'medium', 'high', 'very high']);
+            $table->timestamp('due_at')->nullable();
+            $table->enum('status', ['not started', 'in progress', 'urgent', 'in time', 'overdue', 'late'])->default('not started');
+            $table->timestamp('complete_at')->nullable();
             $table->integer('progress')->default(0); // progress percentage
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->timestamps();
         });
     }

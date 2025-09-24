@@ -10,10 +10,11 @@ import {
     SidebarMenuButton,
     SidebarMenuItem,
 } from '@/components/ui/sidebar';
-import { dashboard, tasksIndex, tasksCreate, performance } from '@/routes';
+
+import { dashboard, tasksIndex, tasksCreate, performance, priorityListIndex } from '@/routes';
 import { type NavItem } from '@/types';
 import { Link } from '@inertiajs/react';
-import { BookOpen, Folder, LayoutGrid, ListCheck, CirclePlus, ChartColumn } from 'lucide-react';
+import { BookOpen, Folder, LayoutGrid, ListCheck, CirclePlus, ChartColumn, ListOrdered } from 'lucide-react';
 import AppLogo from './app-logo';
 
 const mainNavItems: NavItem[] = [
@@ -31,6 +32,11 @@ const mainNavItems: NavItem[] = [
         title: 'Create Task',
         href: tasksCreate(),
         icon: CirclePlus,
+    },
+    {
+        title: 'Priority List',
+        href: priorityListIndex(),
+        icon: ListOrdered,
     },
     {
         title: 'Performance',

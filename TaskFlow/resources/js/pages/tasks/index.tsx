@@ -1,29 +1,31 @@
 import AppLayout from '@/layouts/app-layout';
 import { tasksIndex, tasksCreate } from '@/routes';
 import { type BreadcrumbItem } from '@/types';
-import { Head } from '@inertiajs/react';
+import { Head, Link } from '@inertiajs/react';
 import { PageProps } from '@inertiajs/core';
-import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
+import { Card, CardHeader, CardTitle, CardContent, CardDescription } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Button } from '@/components/ui/button';
 import { CirclePlus, SquarePen, Trash2 } from 'lucide-react';
-import ActionButtons from '@/components/action-buttons';
 import { Root, Indicator, } from "@radix-ui/react-progress";
 
-interface Task {
+import { DataTable } from "./data-table"
+import { columns } from './columns'
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { useEffect, useState } from 'react';
+
+export type Task = {
     id: number;
     title: string;
     description: string | null;
+    status: string;
     status_formatted: string;
-    due_date_formatted: string | null;
-    due_time_formatted: string | null;
+    due_at_formatted: string | null;
     time_estimate_formatted: string;
+    time_remaining_formatted: string;
     progress: number;
-    priority_formatted: string;
-}
-
-interface Props extends PageProps {
-    tasks: Task[];
+    importance_level_formatted: string;
+    complete_at_formatted: string;
 }
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -33,7 +35,15 @@ const breadcrumbs: BreadcrumbItem[] = [
     },
 ];
 
-export default function Index({tasks}: Props) {
+interface Props extends PageProps {
+    tasks: Task[];
+    flash?: {
+        showDialog?: boolean
+    }
+}
+
+export default function Index({tasks, flash}: Props) {
+
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Tasks" />
@@ -41,15 +51,11 @@ export default function Index({tasks}: Props) {
                 <Card>
                     <CardHeader className="flex-row items-center justify-between">
                         <CardTitle>Tasks List</CardTitle>
-                        <a href={tasksCreate().url}>
-                            <Button variant="outline" className="bg-blue-600 text-white hover:bg-blue-700 hover:text-white">
-                                <CirclePlus />
-                                Create Task
-                            </Button>
-                        </a>
                     </CardHeader>
                     <CardContent>
-                        <Table className="overflow-x-auto">
+                        <CardDescription className="font-bold">Note: Select at least 2 rows to prioritize tasks.</CardDescription>
+                        <DataTable columns={columns} data={tasks} enableRowSelection={row => row.original.progress < 100} flash={flash} />
+                        {/* <<Table className="overflow-x-auto">
                             <TableHeader>
                                 <TableRow>
                                     <TableHead>ID</TableHead>
@@ -72,7 +78,7 @@ export default function Index({tasks}: Props) {
                                         <TableCell>{item.description ? item.description : "-"}</TableCell>
                                         <TableCell>{item.priority_formatted}</TableCell>
                                         <TableCell>{item.status_formatted}</TableCell>
-                                        <TableCell>{item.due_date_formatted}</TableCell>
+                                      
                                         <TableCell>{item.due_time_formatted}</TableCell>
                                         <TableCell>{item.time_estimate_formatted}</TableCell>
                                         <TableCell>
@@ -88,12 +94,16 @@ export default function Index({tasks}: Props) {
                                         </TableCell>
 
                                         <TableCell className="flex gap-2">
-                                            <ActionButtons />
+                                            <EditIcon 
+                                                action={tasksEdit(item).url} 
+                                                disabled={item.progress === 100}
+                                            />
+                                            <DeleteIcon action={tasksDestroy(item).url} />
                                         </TableCell>
                                     </TableRow>
                                 ))}
                             </TableBody>
-                        </Table>
+                        </Table>> */}
                     </CardContent>
                 </Card>
             </div>
