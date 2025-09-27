@@ -73,7 +73,7 @@ export function DataTable<TData, TValue>({
         status: false, // 👈 hidden by default
     })
     const [rowSelection, setRowSelection] = React.useState({})
-    
+
     const table = useReactTable({
         data,
         columns,
@@ -92,7 +92,7 @@ export function DataTable<TData, TValue>({
             sorting,
             columnFilters,
             columnVisibility,
-            rowSelection
+            rowSelection,
         },
         onPaginationChange: setPagination,
     })
@@ -154,7 +154,7 @@ export function DataTable<TData, TValue>({
              : (
                 // <Dialog>
                 //     <DialogTrigger asChild>
-                    <Button size="sm" className="bg-green-700 hover:bg-green-800 text-white ml-3" asChild>
+                    <Button size="sm" className="bg-green-600 hover:bg-green-700 text-white ml-3" asChild>
                         <Link method="post" as="button" href={priorityListCreate()} data={{ ids: selectedIds }}>
                             <ArrowUpDown />
                             Prioritize Selected Tasks
@@ -241,10 +241,10 @@ export function DataTable<TData, TValue>({
             <Table>
                 <TableHeader>
                 {table.getHeaderGroups().map((headerGroup) => (
-                    <TableRow key={headerGroup.id}>
+                    <TableRow key={headerGroup.id} className="bg-gradient-to-r from-blue-500 to-teal-400">
                     {headerGroup.headers.map((header) => {
                         return (
-                        <TableHead key={header.id}>
+                        <TableHead key={header.id} className="text-white">
                             {header.isPlaceholder
                             ? null
                             : flexRender(
@@ -263,6 +263,7 @@ export function DataTable<TData, TValue>({
                         <TableRow
                             key={row.id}
                             data-state={row.getIsSelected() && "selected"}
+                            className="bg-white odd:bg-white even:bg-gray-100 hover:bg-blue-50 transition-colors"
                         >
                             {row.getVisibleCells().map((cell) => (
                             <TableCell key={cell.id} className="whitespace-normal leading-relaxed">

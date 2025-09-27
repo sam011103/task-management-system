@@ -96,7 +96,7 @@ export default function Edit({task}: Props) {
                             <InputError message={errors.description} />
                         </div>
                         <div className='grid gap-2'>
-                            <Label htmlFor="description">Time Estimate</Label>
+                            <Label htmlFor="description">Effort Estimate</Label>
                             <div className="flex gap-2 items-center">
                             
                                 <Input

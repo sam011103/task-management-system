@@ -51,13 +51,13 @@ export default function Index({list}: Props) {
                                     <TableHead>No.</TableHead>
                                     <TableHead>Title</TableHead>
                                     <TableHead>Description</TableHead>
-                                    <TableHead>Importance Level</TableHead>
+                                    {/* <TableHead>Importance Level</TableHead>
                                     <TableHead>Status</TableHead>
-                                    <TableHead>Due At</TableHead>
+                                    <TableHead>Due At</TableHead> */}
                                     {/* <TableHead>Time Estimate</TableHead> */}
-                                    <TableHead>Time Remaining</TableHead>
+                                    <TableHead>Effort Left</TableHead>
                                     <TableHead>Progress</TableHead>
-                                    <TableHead>Priority Score</TableHead>
+                                    {/* <TableHead>Priority Score</TableHead> */}
                                     <TableHead>Actions</TableHead>
                                 </TableRow>
                             </TableHeader>
@@ -67,23 +67,23 @@ export default function Index({list}: Props) {
                                         <TableCell className="font-medium">{key + 1}</TableCell>
                                         <TableCell className='whitespace-normal leading-relaxed'>{item.task.title}</TableCell>
                                         <TableCell className='whitespace-normal leading-relaxed'>{item.task.description ? item.task.description : "-"}</TableCell>
-                                        <TableCell>{item.task.importance_level_formatted}</TableCell>
+                                        {/* <TableCell>{item.task.importance_level_formatted}</TableCell>
                                         <TableCell>{item.task.status_formatted}</TableCell>
-                                        <TableCell>{item.task.due_at_formatted}</TableCell>
+                                        <TableCell>{item.task.due_at_formatted}</TableCell> */}
                                         {/* <TableCell>{item.task.time_estimate_formatted}</TableCell> */}
                                         <TableCell>{item.task.time_remaining_formatted}</TableCell>
                                         <TableCell>
                                             <div className="flex items-center gap-2">
                                                 <Root className="relative h-4 w-20 overflow-hidden rounded-full bg-gray-200">
                                                 <Indicator
-                                                    className="h-full bg-green-600 transition-all duration-500 ease-in-out"
+                                                    className="h-full bg-gradient-to-r from-green-500 to-green-600 transition-all duration-500 ease-in-out"
                                                     style={{ width: item.task.progress > 0 ? `${item.task.progress}%` : "0%" }}
                                                 />
                                                 </Root>
                                                 <span>{item.task.progress}%</span>
                                             </div>
                                         </TableCell>
-                                        <TableCell>{item.priority_score}</TableCell>
+                                        {/* <TableCell>{item.priority_score}</TableCell> */}
                                     
                                         <TableCell className="align-middle">
                                             <div className="flex gap-2">

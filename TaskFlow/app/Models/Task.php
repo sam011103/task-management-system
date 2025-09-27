@@ -42,19 +42,19 @@ class Task extends Model
 
     public function getStatusFormattedAttribute()
     {
-        $value = $this->attributes['status'];
+        $value = $this->attributes['status'] ?? null;
         return ucwords($value);
     }
 
     public function getImportanceLevelFormattedAttribute()
     {
-        $value = $this->attributes['importance_level'];
+        $value = $this->attributes['importance_level'] ?? null;
         return ucwords($value);
     }
 
     public function getTimeEstimateFormattedAttribute()
     {
-        $value = $this->attributes['time_estimate'];
+        $value = $this->attributes['time_estimate'] ?? null;
 
         if($value === 0)
             return '0 min';
@@ -75,45 +75,45 @@ class Task extends Model
 
     public function getDueAtFormattedAttribute()
     {
-        $value = $this->attributes['due_at'];
-        return $value ? date('d M Y h:i A', strtotime($value)) : '-';
+        $value = $this->attributes['due_at'] ?? null;
+        return $value ? date('d M Y, h:i a', strtotime($value)) : '-';
     }
 
     public function getCompleteAtFormattedAttribute()
     {
-        $value = $this->attributes['complete_at'];
-        return $value ? date('d M Y h:i A', strtotime($value)) : '-';
+        $value = $this->attributes['complete_at'] ?? null;
+        return $value ? date('d M Y, h:i a', strtotime($value)): '-';
     }
 
     public function getDueDateAttribute()
     {
-        $value = $this->attributes['due_at'];
+        $value = $this->attributes['due_at'] ?? null;
         return $value ? \Carbon\Carbon::parse($value)->format('Y-m-d') : null;
     }
 
     public function getDueTimeAttribute()
     {
-        $value = $this->attributes['due_at'];
+        $value = $this->attributes['due_at'] ?? null;
         return $value ? \Carbon\Carbon::parse($value)->format('H:i') : null;
     }
 
     public function getHourEstimateAttribute()
     {
-        $value = $this->attributes['time_estimate'];
+        $value = $this->attributes['time_estimate'] ?? null;
         $hours = floor($value / 60);
         return $hours;
     }
 
     public function getMinuteEstimateAttribute()
     {
-        $value = $this->attributes['time_estimate'];
+        $value = $this->attributes['time_estimate'] ?? null;
         $minute = $value % 60;
         return $minute;
     }
 
     public function getTimeRemainingFormattedAttribute()
     {
-        $value = $this->attributes['time_remaining'];
+        $value = $this->attributes['time_remaining'] ?? null;
 
         if($value === 0)
             return '0 min';

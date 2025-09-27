@@ -10,9 +10,7 @@ Route::get('/', function () {
 })->name('home');
 
 Route::middleware(['auth', 'verified'])->group(function () {
-    Route::get('/dashboard', function () {
-        return Inertia::render('dashboard');
-    })->name('dashboard');
+    Route::get('/dashboard', [TaskController::class, 'dashboard'] )->name('dashboard');
 
     Route::get('/tasks', [TaskController::class, 'index'])->name('tasksIndex');
     Route::get('/tasks/create', [TaskController::class, 'create'])->name('tasksCreate');

@@ -12,7 +12,6 @@ import { Task } from ".";
 import { StatusBadge } from "@/components/status-badge";
 
 const importanceLevelOrder = ["Very Low", "Low", "Medium", "High", "Very High"]
-const statusOrder = ["Not Started", "In Progress", "Completed"]
 
 function parseTimeToMinutes(str: string) {
     if (!str) return 0
@@ -30,6 +29,7 @@ export const columns: ColumnDef<Task>[] = [
         id: "select",
         header: ({ table }) => (
           <Checkbox
+            className="data-[state=checked]:bg-blue-500 data-[state=checked]:border-white"
             checked={
               table.getIsAllPageRowsSelected() ||
               (table.getIsSomePageRowsSelected() && "indeterminate")
@@ -44,6 +44,7 @@ export const columns: ColumnDef<Task>[] = [
             }
             return (
                 <Checkbox
+                    className="data-[state=checked]:bg-blue-500 data-[state=checked]:border-white"
                     checked={row.getIsSelected()}
                     onCheckedChange={(value) => row.toggleSelected(!!value)}
                     aria-label="Select row"
@@ -107,11 +108,13 @@ export const columns: ColumnDef<Task>[] = [
         footer: props => props.column.id,
         meta: {title: 'Status'},
         enableHiding: false,
-        // filterFn: (row, id, filterValues: string[]) => {
-        //     if (!filterValues?.length) return false
-        //     const rowValue = (row.getValue(id) as string).toLowerCase().trim()
-        //     return filterValues.map(v => v.toLowerCase().trim()).includes(rowValue)
-        // }
+        filterFn: (row, id, filterValues: string[] | undefined) => {
+            // if no filters selected, show all rows
+            if (!filterValues || filterValues.length === 0) return false;
+        
+            // show row if its status is included in selected filter values
+            return filterValues.includes(row.getValue(id));
+        },
     },
     {
         accessorKey: 'due_at_formatted',
@@ -158,20 +161,20 @@ export const columns: ColumnDef<Task>[] = [
     //     footer: props => props.column.id,
     //     meta: {title: 'Due Time'},
     // },
-    {
-        accessorKey: 'time_estimate_formatted',
-        header: ({ column }) => (
-            <DataTableColumnHeader column={column} title="Effort Estimate" />
-        ),
-        cell: info => info.getValue(),
-        footer: props => props.column.id,
-        sortingFn: (rowA, rowB, columnId) => {
-            const a = parseTimeToMinutes(rowA.getValue(columnId))
-            const b = parseTimeToMinutes(rowB.getValue(columnId))
-            return a - b
-        },
-        meta: {title: 'Effort Estimate'},
-    },
+    // {
+    //     accessorKey: 'time_estimate_formatted',
+    //     header: ({ column }) => (
+    //         <DataTableColumnHeader column={column} title="Effort Estimate" />
+    //     ),
+    //     cell: info => info.getValue(),
+    //     footer: props => props.column.id,
+    //     sortingFn: (rowA, rowB, columnId) => {
+    //         const a = parseTimeToMinutes(rowA.getValue(columnId))
+    //         const b = parseTimeToMinutes(rowB.getValue(columnId))
+    //         return a - b
+    //     },
+    //     meta: {title: 'Effort Estimate'},
+    // },
     {
         accessorKey: 'time_remaining_formatted',
         header: ({ column }) => (
@@ -197,7 +200,7 @@ export const columns: ColumnDef<Task>[] = [
               <div className="flex items-center gap-2">
                 <Root className="relative h-4 w-20 overflow-hidden rounded-full bg-gray-200">
                     <Indicator
-                        className="h-full bg-green-600 transition-all duration-500 ease-in-out"
+                        className="h-full bg-gradient-to-r from-green-500 to-green-600 transition-all duration-500 ease-in-out"
                         style={{ width: value > 0 ? `${value}%` : "0%" }}
                     />
                 </Root>

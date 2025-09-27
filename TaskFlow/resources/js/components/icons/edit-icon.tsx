@@ -14,7 +14,7 @@ export default function EditIcon({
     {!disabled ? (
       <Tooltip>
         <TooltipTrigger asChild>
-          <Link href={action} prefetch={true}>
+          <Link href={action}>
             <SquarePen size={24} className="p-1 rounded cursor-pointer" />
           </Link>
         </TooltipTrigger>

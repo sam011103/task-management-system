@@ -10,9 +10,60 @@ class TaskController extends Controller
 {
     public function index()
     {
-        $tasks = Task::latest()->get();
+        $userId = auth()->id();
+        $tasks = Task::latest()->where('user_id', $userId)->get();
         return Inertia::render('tasks/index',[
             'tasks' => $tasks
+        ]);
+    }
+
+    public function dashboard()
+    {
+        $userId = auth()->id();
+        $stats['completed'] = Task::where('user_id', $userId)->whereIn('status', ['in time', 'late'])->count();
+        $stats['incomplete'] = Task::where('user_id', $userId)->whereNotIn('status', ['in time', 'late'])->count();
+        $stats['urgent'] = Task::where('user_id', $userId)->where('status', 'urgent')->count();
+        $stats['overdue'] = Task::where('user_id', $userId)->where('status', 'overdue')->count();
+
+        //chart stats
+        $taskStats = Task::where('user_id', $userId)
+            ->selectRaw('status, COUNT(*) as tasks')
+            ->groupBy('status')
+            ->pluck('tasks', 'status');
+
+        $chartData = [];
+
+        //chart colors
+        $statuses = [
+            'not started' => '#9CA3AF', // gray → neutral
+            'in progress' => '#3B82F6', // blue → active
+            'urgent'      => '#F59E0B', // amber → warning
+            'overdue'     => '#EF4444', // red → danger
+            'in time'     => '#10B981', // green → success
+            'late'        => '#7C3AED', // purple → delayed but still tracked
+        ];
+
+        $chartData = collect($statuses)->map(function ($color, $status) use ($taskStats) {
+            return [
+                'status' => $status,
+                'tasks'  => $taskStats[$status] ?? 0,   // use count or 0
+                'fill'   => $color,
+            ];
+        })->values();
+
+        //upcoming deadlines
+        $deadlines = Task::where('user_id', $userId)
+            ->whereNotIn('status', ['in time', 'late'])
+            ->whereNotNull('due_at')
+            ->where('due_at', '>=', now())
+            ->orderBy('due_at', 'asc')
+            ->take(5)
+            ->get(['title', 'due_at']);
+
+        return Inertia::render('dashboard/index',[
+            'stats' => $stats,
+            'chartData' => $chartData,
+            'deadlines' => $deadlines
         ]);
     }
 
@@ -57,6 +108,37 @@ class TaskController extends Controller
         $request->merge(['user_id' => auth()->id()]);
 
         $task = Task::create($request->all());
+
+        if($task->progress === 100) 
+        {
+            $task->complete_at = now();
+            if ($task->due_at) 
+            { // check if due_at exists
+                $task->status = $task->complete_at->greaterThan($task->due_at) ? 'late' : 'in time';
+            } 
+            else 
+            {
+                $task->status = 'in time'; // or whatever default
+            }
+        }
+        elseif($task->due_at && now()->greaterThan($task->due_at))
+        {
+            $task->status = 'overdue';
+        } 
+        elseif($task->due_at && now()->greaterThan($task->due_at->copy()->subMinutes($task->time_remaining + 60)))
+        {
+            $task->status = 'urgent';
+        }
+        elseif ($task->progress > 0) 
+        {
+            $task->status = 'in progress';
+        } 
+        else 
+        {
+            $task->status = 'not started';
+        }
+
+        $task->save();
 
         return redirect()->route('tasksIndex')->with('success', 'Task created successfully.');
     }
@@ -106,16 +188,24 @@ class TaskController extends Controller
         }
 
         $task->update(request()->all());
+
         if($task->progress === 100) 
         {
             $task->complete_at = now();
-            $task->complete_at->greaterThan($task->due_at) ? $task->status = 'late' : $task->status = 'in time';
+            if ($task->due_at) 
+            { // check if due_at exists
+                $task->status = $task->complete_at->greaterThan($task->due_at) ? 'late' : 'in time';
+            } 
+            else 
+            {
+                $task->status = 'in time'; // or whatever default
+            }
         }
-        elseif(now()->greaterThan($task->due_at))
+        elseif($task->due_at && now()->greaterThan($task->due_at))
         {
             $task->status = 'overdue';
         } 
-        elseif(now()->greaterThan($task->due_at->copy()->subMinutes($task->time_remaining)))
+        elseif($task->due_at && now()->greaterThan($task->due_at->copy()->subMinutes($task->time_remaining + 60)))
         {
             $task->status = 'urgent';
         }
