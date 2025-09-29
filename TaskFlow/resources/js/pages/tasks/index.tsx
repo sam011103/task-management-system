@@ -13,6 +13,7 @@ import { DataTable } from "./data-table"
 import { columns } from './columns'
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { useEffect, useState } from 'react';
+import { TodoList } from '../todo-list';
 
 export type Task = {
     id: number;
@@ -26,6 +27,7 @@ export type Task = {
     progress: number;
     importance_level_formatted: string;
     complete_at_formatted: string;
+    today_list: TodoList[];
 }
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -43,18 +45,23 @@ interface Props extends PageProps {
 }
 
 export default function Index({tasks, flash}: Props) {
-
+    // console.log(tasks[0].today_list)
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Tasks" />
-            <div className="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4">
-                <Card>
-                    <CardHeader className="flex-row items-center justify-between">
+            <div className="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-2 sm:p-4">
+                <Card className="border-none shadow-none">
+                    <CardHeader className="flex-row items-center justify-between px-0 sm:px-6">
                         <CardTitle>Tasks List</CardTitle>
                     </CardHeader>
-                    <CardContent>
-                        <CardDescription className="font-bold">Note: Select at least 2 rows to prioritize tasks.</CardDescription>
-                        <DataTable columns={columns} data={tasks} enableRowSelection={row => row.original.progress < 100} flash={flash} />
+                    <CardContent className="px-0 sm:px-6">
+                        <CardDescription className="font-bold">Note: Select tasks to add to today's list.</CardDescription>
+                        <DataTable 
+                            columns={columns} 
+                            data={tasks} 
+                            enableRowSelection={row => row.original.progress < 100 && !row.original.today_list} 
+                            flash={flash} 
+                        />
                         {/* <<Table className="overflow-x-auto">
                             <TableHeader>
                                 <TableRow>

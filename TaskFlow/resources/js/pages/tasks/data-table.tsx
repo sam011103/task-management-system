@@ -39,13 +39,15 @@ import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { DataTablePagination } from "@/components/data-table-pagination"
 import { DataTableViewOptions } from "@/components/data-table-view-options"
-import { ArrowUpDown, CirclePlus } from "lucide-react"
-import { tasksCreate, priorityListCreate, priorityListIndex } from "@/routes"
-import { Link } from "@inertiajs/react"
+import { ListTodo, CirclePlus } from "lucide-react"
+import { tasksCreate, todoListCreate, todoListIndex } from "@/routes"
+import { Form, Link } from "@inertiajs/react"
 import { Label } from "@/components/ui/label"
 import InputError from "@/components/input-error"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import StatusFilter from "./status-filter"
+import { Checkbox } from "@/components/ui/checkbox"
+import TodoListController from "@/actions/App/Http/Controllers/TodoListController"
 
 interface DataTableProps<TData, TValue> {
     columns: ColumnDef<TData, TValue>[]
@@ -129,6 +131,23 @@ export function DataTable<TData, TValue>({
         }
     }, [flash?.showDialog])
 
+    // const { data, setData, post, processing, errors } = useForm({
+    //     title: task.title ?? '',
+    //     description: task.description ?? '',
+    //     status: task.status ?? 'not_started',
+    //     progress: task.progress ?? 0,
+    //     hour_estimate: task.hour_estimate ?? 1,
+    //     minute_estimate: task.minute_estimate ?? 1,
+    //     importance_level: task.importance_level ?? 'normal',
+    //     due_date: task.due_date ?? '',
+    //     due_time: task.due_time ?? '',
+    // })
+
+    // function submit(e: React.FormEvent) {
+    //     e.preventDefault()
+    //     post(TodoListController.store().url)
+    // }
+
     return (
     <div>
         <div className="flex items-center py-4 gap-3">
@@ -143,7 +162,7 @@ export function DataTable<TData, TValue>({
             <StatusFilter column={table.getColumn('status')} />
             <DataTableViewOptions table={table}/>
             {
-                table.getFilteredSelectedRowModel().rows.length < 2 ? (
+                table.getFilteredSelectedRowModel().rows.length == 0 ? (
                     <Link href={tasksCreate().url} className="ml-3" prefetch>
                     <Button size="sm" className="bg-blue-600 hover:bg-blue-700 text-white">
                         <CirclePlus />
@@ -152,55 +171,70 @@ export function DataTable<TData, TValue>({
                 </Link>
                 )
              : (
-                // <Dialog>
-                //     <DialogTrigger asChild>
-                    <Button size="sm" className="bg-green-600 hover:bg-green-700 text-white ml-3" asChild>
-                        <Link method="post" as="button" href={priorityListCreate()} data={{ ids: selectedIds }}>
-                            <ArrowUpDown />
-                            Prioritize Selected Tasks
-                        </Link>
-                    </Button>
-                //     </DialogTrigger>
-                //     <DialogContent 
-                //     // className="!max-w-screen-md"
-                //     >
-                //         <DialogHeader>
-                //             <DialogTitle>Priority Preferences</DialogTitle>
-                //             <DialogDescription>
+                <Dialog>
+                    <DialogTrigger asChild>
+                        <Button size="sm" className="bg-green-600 hover:bg-green-700 text-white ml-3">
+                            {/* <Link method="post" as="button" href={todoListCreate()} data={{ ids: selectedIds }}> */}
+                                <ListTodo />
+                                Add To List
+                            {/* </Link> */}
+                        </Button>
+                    </DialogTrigger>
+                    <DialogContent 
+                    // className="!max-w-screen-md"
+                    >
+                        <DialogHeader>
+                            <DialogTitle>Options</DialogTitle>
+                            <DialogDescription>
                                
-                //             </DialogDescription>
-                //         </DialogHeader>
-                //         <form
-                //             // onSubmit={(event) => {
-                //             //     wait().then(() => setOpen(false));
-                //             //     event.preventDefault();
-                //             // }}
-                //         >
-                //             <fieldset className="space-y-5">
-                //                 <legend className="text-md font-medium mb-2">Priority Method</legend>
-                //                 <RadioGroup defaultValue="0" name="method">
-                //                     <div className="flex items-center space-x-2">
-                //                         <RadioGroupItem value="0" id="method-min" />
-                //                         <Label htmlFor="method-min">Minimize overdue tasks</Label>
-                //                     </div>
-                //                     <div className="flex items-center space-x-2">
-                //                         <RadioGroupItem value="1" id="method-overdue" />
-                //                         <Label htmlFor="method-priority">Overdue tasks first</Label>
-                //                     </div>
-                //                     <div className="flex items-center space-x-2">
-                //                         <RadioGroupItem value="2" id="method-priority" />
-                //                         <Label htmlFor="method-priority">Priority first</Label>
-                //                     </div>
-                //                 </RadioGroup>
+                            </DialogDescription>
+                        </DialogHeader>
+                        <Form
+                            className="flex flex-col gap-6"
+                            {...TodoListController.store.form()}
+                            // onSubmit={(event) => {
+                            //     wait().then(() => setOpen(false));
+                            //     event.preventDefault();
+                            // }}
+                        >
+                            {/* <fieldset className="space-y-5">
+                                <legend className="text-md font-medium mb-2">Priority Method</legend>
+                                <RadioGroup defaultValue="0" name="method">
+                                    <div className="flex items-center space-x-2">
+                                        <RadioGroupItem value="0" id="method-min" />
+                                        <Label htmlFor="method-min">Minimize overdue tasks</Label>
+                                    </div>
+                                    <div className="flex items-center space-x-2">
+                                        <RadioGroupItem value="1" id="method-overdue" />
+                                        <Label htmlFor="method-priority">Overdue tasks first</Label>
+                                    </div>
+                                    <div className="flex items-center space-x-2">
+                                        <RadioGroupItem value="2" id="method-priority" />
+                                        <Label htmlFor="method-priority">Priority first</Label>
+                                    </div>
+                                </RadioGroup>
                                
-                //             </fieldset>
-                //             {/** some inputs */}
-                //             <div className="flex justify-end mt-6">
-                //                 <Button type="submit">Submit</Button>
-                //             </div>
-                //         </form>
-                //     </DialogContent>
-                // </Dialog>
+                            </fieldset> */}
+                            {/** some inputs */}
+                            {({ processing, errors }) => (
+                                <>
+                                    {selectedIds.map(id => (
+                                        <input type="hidden" name="ids[]" value={id} key={id} />
+                                    ))}
+                                    <InputError message={errors.ids} />
+                                     <div className="flex items-center space-x-2">
+                                        <Checkbox id="prioritize" name="prioritize" tabIndex={5} />
+                                        <Label htmlFor="prioritize" className="mb-0">Prioritize Tasks</Label>
+                                    </div>
+
+                                    <div className="flex justify-end mt-6">
+                                        <Button type="submit" disabled={processing}>Proceed</Button>
+                                    </div>
+                                </>
+                            )}
+                        </Form>
+                    </DialogContent>
+                </Dialog>
                 ) 
             }
                 
@@ -283,16 +317,16 @@ export function DataTable<TData, TValue>({
             </Table>
         </div>
         <DataTablePagination table={table} />
-        <Dialog  open={open} onOpenChange={setOpen}>
+        {/* <Dialog  open={open} onOpenChange={setOpen}>
             <DialogContent>
                 <DialogHeader>
                     <DialogTitle>Replace Existing List</DialogTitle>
                     <DialogDescription className="leading-relaxed">
-                    {/* <div className="text-sm leading-relaxed"> */}
+                    <div className="text-sm leading-relaxed">
                         You already have a{" "}
-                        <Link className="text-blue-700 hover:text-blue-800 underline" href={priorityListIndex()}>
-                            prioritized list
-                        </Link>.
+                        <Link className="text-blue-700 hover:text-blue-800 underline" href={todoListIndex()}>
+                            Todo List
+                        </Link> for today.
                         <br></br>
                         <br></br>
                         Do you want to replace it?
@@ -304,13 +338,13 @@ export function DataTable<TData, TValue>({
                 <div className="flex justify-end gap-3">
                     <Button variant="outline" onClick={() => setOpen(false)}>Close</Button>
                     <Button className="bg-blue-600 hover:bg-blue-700" asChild>
-                        <Link href={priorityListCreate()} data={{ ids: selectedIds, confirm: true }} method="post" as="button">
+                        <Link href={todoListCreate()} data={{ ids: selectedIds, confirm: true }} method="post" as="button">
                             Proceed
                         </Link>
                     </Button>
                 </div>
             </DialogContent>
-        </Dialog>
+        </Dialog> */}
     </div>
 
    

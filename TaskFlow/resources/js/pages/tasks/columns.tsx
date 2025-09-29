@@ -39,7 +39,7 @@ export const columns: ColumnDef<Task>[] = [
           />
         ),
         cell: ({ row }) => {
-            if (row.original.progress === 100) {
+            if (row.original.progress === 100 || row.original.today_list) {
                 return null;
             }
             return (

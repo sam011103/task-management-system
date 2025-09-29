@@ -5,9 +5,14 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use App\Models\Task;
+use App\Models\TodoList;
+use App\Services\PriorityService;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
 class TaskController extends Controller
 {
+    use AuthorizesRequests;
+    
     public function index()
     {
         $userId = auth()->id();
@@ -35,12 +40,12 @@ class TaskController extends Controller
 
         //chart colors
         $statuses = [
-            'not started' => '#9CA3AF', // gray → neutral
-            'in progress' => '#3B82F6', // blue → active
-            'urgent'      => '#F59E0B', // amber → warning
-            'overdue'     => '#EF4444', // red → danger
-            'in time'     => '#10B981', // green → success
-            'late'        => '#7C3AED', // purple → delayed but still tracked
+            'not started' => 'oklch(55.1% 0.027 264.364)', // gray → neutral
+            'in progress' => 'oklch(62.3% 0.214 259.815)', // blue → active
+            'urgent'      => 'oklch(79.5% 0.184 86.047)', // amber → warning
+            'overdue'     => 'oklch(70.5% 0.213 47.604)', // red → danger
+            'in time'     => 'oklch(72.3% 0.219 149.579)', // green → success
+            'late'        => 'oklch(63.7% 0.237 25.331)', // purple → delayed but still tracked
         ];
 
         $chartData = collect($statuses)->map(function ($color, $status) use ($taskStats) {
@@ -60,10 +65,18 @@ class TaskController extends Controller
             ->take(5)
             ->get(['title', 'due_at']);
 
+        //todo list for today with only title, status
+        $todayList = TodoList::with(['tasks' => function($query) {
+            $query->select('tasks.id', 'tasks.title', 'tasks.progress');
+        }])->where('user_id', $userId)
+          ->where('date', now()->toDateString())
+          ->first();
+
         return Inertia::render('dashboard/index',[
             'stats' => $stats,
             'chartData' => $chartData,
-            'deadlines' => $deadlines
+            'deadlines' => $deadlines,
+            'todayList' => $todayList
         ]);
     }
 
@@ -145,6 +158,8 @@ class TaskController extends Controller
 
     public function edit(Task $task)
     {
+        // authorize that the user can update the task
+        $this->authorize('update', $task);
         return Inertia::render('tasks/edit', [
             'task' => $task
         ]);
@@ -152,6 +167,7 @@ class TaskController extends Controller
 
     public function update(Task $task, Request $request)
     {
+        $this->authorize('update', $task);
         request()->validate([
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
@@ -200,6 +216,17 @@ class TaskController extends Controller
             {
                 $task->status = 'in time'; // or whatever default
             }
+
+            if($task->today_list) 
+            {
+                $todayList = $task->today_list;
+                $todayList->completed_count += 1;
+                if($todayList->completed_count === $todayList->task_count)
+                {
+                    $todayList->status = 3; //completed
+                }
+                $todayList->save();
+            }
         }
         elseif($task->due_at && now()->greaterThan($task->due_at))
         {
@@ -219,11 +246,22 @@ class TaskController extends Controller
         }
 
         $task->save();
+
+        //if the task is part of today's list, we may need to reorder the list based on new priority
+        // if($task->todayList) {
+        //     $todayList = $task->todayList;
+            
+        //     $score = PriorityService::calculate($task->id);
+        //     $todayList->tasks()->updateExistingPivot($task->id, ['priority_score' => $score]);
+        //     $tasks = $todayList->tasks()->orderByDesc('priority_score')->get();
+        // }
+
         return redirect()->route('tasksIndex')->with('success', 'Task updated successfully.');
     }
 
     public function destroy(Task $task)
     {
+        $this->authorize('delete', $task);
         $task->delete();
         return redirect()->route('tasksIndex')->with('success', 'Task deleted successfully.');
     }

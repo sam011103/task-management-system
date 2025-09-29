@@ -11,10 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('priority_lists', function (Blueprint $table) {
+        Schema::create('todo_lists', function (Blueprint $table) {
             $table->id();
-            $table->enum('status', [0, 1])->default(0);
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
+            $table->integer('status')->default(0);
+            $table->date('date');
+            $table->integer('task_count')->default(0);
+            $table->integer('completed_count')->default(0);
             $table->timestamps();
         });
     }

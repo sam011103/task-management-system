@@ -37,8 +37,26 @@ class Task extends Model
         'hour_estimate', 
         'minute_estimate',
         'time_remaining_formatted',
-        'complete_at_formatted'
+        'complete_at_formatted',
+        'today_list'
     ];
+
+    public function lists()
+    {
+        return $this->belongsToMany(TodoList::class, 'list_task', 'task_id', 'list_id')
+                    ->withPivot('order', 'priority_score')
+                    ->withTimestamps();
+    }
+
+    public function getTodayListAttribute()
+    {
+        return $this->lists()->where('date', today())->first();
+    }
+
+    // public function getHasTodayListAttribute()
+    // {
+    //     return $this->today_list->exists();
+    // }
 
     public function getStatusFormattedAttribute()
     {

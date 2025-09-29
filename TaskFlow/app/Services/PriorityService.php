@@ -2,14 +2,14 @@
 
 namespace App\Services;
 
-use App\Models\PriorityItem;
+use App\Models\Task;
 
 class PriorityService
 {
     /**
      * Calculate priority score for an item.
      */
-    public function calculate(PriorityItem $item)
+    public function calculate(Task $task)
     {
         $score = 0;
 
@@ -22,13 +22,13 @@ class PriorityService
             'very low'  => 0,
         ];
 
-        $score += $weights[$item->task->importance_level] ?? 0;
+        $score += $weights[$task->importance_level] ?? 0;
 
-        $score += $item->task->progress * 0.2;
+        $score += $task->progress * 0.2;
 
-        if ($item->task->due_date && $item->task->time_estimate) {
-            $timeRemaining = $item->task->time_remaining;
-            $timeLeft = now()->diffInMinutes($item->task->due_at, false); 
+        if ($task->due_date && $task->time_estimate) {
+            $timeRemaining = $task->time_remaining;
+            $timeLeft = now()->diffInMinutes($task->due_at, false); 
             
             if ($timeLeft < 0) {
                 // overdue
@@ -40,8 +40,6 @@ class PriorityService
             }
         }
 
-        $item->priority_score = $score;
-        $item->save();
-        return;
+        return $score;
     }
 }

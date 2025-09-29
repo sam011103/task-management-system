@@ -32,7 +32,7 @@ export default function Create() {
                 <Form
                 //    {...AuthenticatedSessionController.store.form()}
                     {...TaskController.store.form()}
-                    className="flex flex-col gap-6 px-6"
+                    className="flex flex-col gap-6 px-2 sm:px-6"
                     >
 
                         {({ processing, errors }) => (

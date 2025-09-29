@@ -61,11 +61,13 @@ export default function Edit({task}: Props) {
         put(TaskController.update(task).url)
     }
 
+    console.log(task.importance_level)
+
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Edit Task" />
             <FormCard title="Edit Task">
-                <form onSubmit={submit} className="flex flex-col gap-6 px-6">
+                <form onSubmit={submit} className="flex flex-col gap-6 px-2 sm:px-6">
                     <div className="grid gap-6">
                         <div className="grid gap-2">
                             <Label htmlFor="title">Title</Label>
@@ -138,6 +140,7 @@ export default function Edit({task}: Props) {
                                 required
                                 tabIndex={2}
                                 className="rounded-md border border-input bg-background px-3 py-2 text-sm shadow-sm placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                                value={data.importance_level}
                                 onChange={(e) => setData('importance_level', e.target.value)}
                             >
                                 <option value="very low">Very Low</option>

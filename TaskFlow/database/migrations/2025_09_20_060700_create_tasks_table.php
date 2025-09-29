@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('tasks', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->string('title');
             $table->text('description')->nullable();
             $table->integer('time_estimate'); // in minutes
@@ -20,9 +21,10 @@ return new class extends Migration
             $table->enum('importance_level', ['very low', 'low', 'medium', 'high', 'very high']);
             $table->timestamp('due_at')->nullable();
             $table->enum('status', ['not started', 'in progress', 'urgent', 'in time', 'overdue', 'late'])->default('not started');
+            $table->boolean('is_urgent')->default(false);
+            $table->boolean('is_overdue')->default(false);
             $table->timestamp('complete_at')->nullable();
             $table->integer('progress')->default(0); // progress percentage
-            $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->timestamps();
         });
     }

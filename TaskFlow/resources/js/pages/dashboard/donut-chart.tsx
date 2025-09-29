@@ -45,10 +45,7 @@ const chartConfig = {
   },
 } satisfies ChartConfig
 
-  export default function DonutChart({data}: {data: ChartItem[]}) {
-    const totalTasks = React.useMemo(() => {
-      return data.reduce((acc, curr) => acc + curr.tasks, 0)
-    }, [])
+  export default function DonutChart({data, total}: {data: ChartItem[], total: number}) {
 
     // const [innerRadius, setInnerRadius] = React.useState(80);
 
@@ -96,7 +93,7 @@ const chartConfig = {
                           y={viewBox.cy}
                           className="fill-foreground text-3xl font-bold"
                         >
-                          {totalTasks.toLocaleString()}
+                          {total.toLocaleString()}
                         </tspan>
                         <tspan
                           x={viewBox.cx}
