@@ -29,7 +29,7 @@ class TaskStatusUpdated extends Notification implements ShouldQueue
      */
     public function via(object $notifiable): array
     {
-        return ['mail', 'broadcast'];
+        return ['mail'];
     }
 
     /**
@@ -37,9 +37,15 @@ class TaskStatusUpdated extends Notification implements ShouldQueue
      */
     public function toMail(object $notifiable): MailMessage
     {
+        $message = $this->task->status === 'overdue' ? 
+                        "Due at {$this->task->due_at_formatted}." : 
+                        "Please complete it by {$this->task->due_at_formatted}.";
+
         return (new MailMessage)
             ->subject(ucfirst($this->task->status) . ' Task Notification')
-            ->line("The task **{$this->task->title}** is **{$this->task->status}**.")
+            ->line("Your task **{$this->task->title}** is **{$this->task->status}**.")
+            ->line($message)
+            ->line("Please check your task list for more details.")
             ->action('View Task', url("/tasks"))
             ->line('Thank you for using our application!');
     }
@@ -56,11 +62,12 @@ class TaskStatusUpdated extends Notification implements ShouldQueue
         ];
     }
 
-    public function toBroadcast(object $notifiable): BroadcastMessage
-    {
-        return new BroadcastMessage([
-            'title' => $this->task->title,
-            'status' => $this->task->status,
-        ]);
-    }
+    // public function toBroadcast(object $notifiable): BroadcastMessage
+    // {
+    //     return new BroadcastMessage([
+    //         'task_id' => $this->task->id,
+    //         'task_title' => $this->task->title,
+    //         'task_status' => $this->task->status,
+    //     ]);
+    // }
 }

@@ -52,15 +52,14 @@ export const columns: ColumnDef<Task>[] = [
             )
         }
     },
-    // {
-    //     accessorKey: 'id',
-    //     header: ({ column }) => (
-    //         <DataTableColumnHeader column={column} title="No." />
-    //     ),
-    //     cell: ({ row }) => row.index + 1, // row.index starts from 0
-    //     footer: props => props.column.id,
-    //     meta: {title: 'No.'},
-    // },
+    {
+        accessorKey: 'id',
+        header: '#',
+        cell: ({ row }) => row.index + 1, // row.index starts from 0
+        footer: props => props.column.id,
+        meta: {title: 'No.'},
+        enableHiding: false,
+    },
     {
         accessorKey: "title",
         header: "Title",

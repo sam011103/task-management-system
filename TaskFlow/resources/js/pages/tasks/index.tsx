@@ -1,19 +1,15 @@
-import AppLayout from '@/layouts/app-layout';
+import AppLayout, { TaskEvent } from '@/layouts/app-layout';
 import { tasksIndex, tasksCreate } from '@/routes';
 import { type BreadcrumbItem } from '@/types';
-import { Head, Link } from '@inertiajs/react';
-import { PageProps } from '@inertiajs/core';
+import { Head, Link, usePage } from '@inertiajs/react';
+import { PageProps, router } from '@inertiajs/core';
 import { Card, CardHeader, CardTitle, CardContent, CardDescription } from '@/components/ui/card';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { Button } from '@/components/ui/button';
-import { CirclePlus, SquarePen, Trash2 } from 'lucide-react';
-import { Root, Indicator, } from "@radix-ui/react-progress";
 
 import { DataTable } from "./data-table"
 import { columns } from './columns'
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { useEffect, useState } from 'react';
 import { TodoList } from '../todo-list';
+import { useEcho } from '@laravel/echo-react';
 
 export type Task = {
     id: number;
@@ -37,15 +33,18 @@ const breadcrumbs: BreadcrumbItem[] = [
     },
 ];
 
-interface Props extends PageProps {
-    tasks: Task[];
-    flash?: {
-        showDialog?: boolean
-    }
-}
+export default function Index({tasks}: {tasks: Task[]}) {
+    const { props: inertiaProps } = usePage();
+    const { auth } = inertiaProps;
+    const userId = auth?.user?.id;
 
-export default function Index({tasks, flash}: Props) {
-    // console.log(tasks[0].today_list)
+    useEcho<TaskEvent>(
+        `user.${userId}`,
+        'TaskEvent',
+        (e) => {
+            router.reload({ replace: true });
+        },
+    );
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Tasks" />
@@ -59,8 +58,7 @@ export default function Index({tasks, flash}: Props) {
                         <DataTable 
                             columns={columns} 
                             data={tasks} 
-                            enableRowSelection={row => row.original.progress < 100 && !row.original.today_list} 
-                            flash={flash} 
+                            enableRowSelection={row => row.original.progress < 100 && !row.original.today_list}  
                         />
                         {/* <<Table className="overflow-x-auto">
                             <TableHeader>

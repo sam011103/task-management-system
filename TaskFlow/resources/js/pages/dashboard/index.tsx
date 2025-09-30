@@ -3,13 +3,14 @@ import { PlaceholderPattern } from '@/components/ui/placeholder-pattern';
 import AppLayout from '@/layouts/app-layout';
 import { dashboard, todoListIndex, tasksIndex } from '@/routes';
 import { type BreadcrumbItem } from '@/types';
-import { Head, Link } from '@inertiajs/react';
-import { PageProps } from '@inertiajs/core';
+import { Head, Link, usePage } from '@inertiajs/react';
+import { PageProps, router } from '@inertiajs/core';
 import DonutChart from './donut-chart';
 import { Table, TableBody, TableCell, TableRow } from '@/components/ui/table';
 import { SquareCheck } from 'lucide-react';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Task } from '../tasks';
+import { useEcho } from '@laravel/echo-react';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -49,9 +50,23 @@ interface Props extends PageProps {
     
 
 export default function Index({stats, chartData, deadlines, todayList}: Props) {
+    const { props: inertiaProps } = usePage();
+    const { auth } = inertiaProps;
+    const userId = auth?.user?.id;
+
+    useEcho(
+        `user.${userId}`,
+        "TaskEvent",
+        (e) => {
+            router.reload({ replace: true });
+        },
+    );
+
     const totalTasks = React.useMemo(() => {
         return chartData.reduce((acc, curr) => acc + curr.tasks, 0)
     }, [])
+
+
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Dashboard" />

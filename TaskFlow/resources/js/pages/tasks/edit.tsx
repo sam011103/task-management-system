@@ -61,8 +61,6 @@ export default function Edit({task}: Props) {
         put(TaskController.update(task).url)
     }
 
-    console.log(task.importance_level)
-
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Edit Task" />

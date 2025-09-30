@@ -4,6 +4,7 @@ namespace App\Console\Tasks;
 use App\Models\Task;
 use App\Models\User;
 use App\Notifications\TaskStatusUpdated;
+use App\Events\TaskEvent;
 
 class UpdateTaskStatus
 {
@@ -44,6 +45,7 @@ class UpdateTaskStatus
             $user_id = $task->user_id;
             $user = User::find($user_id);
             $user->notify(new TaskStatusUpdated($task));
+            event(new TaskEvent($task));
         }
     }
 }

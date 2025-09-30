@@ -4,10 +4,19 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Models\TodoList;
+use App\Models\User;
+// use App\Events\TaskEvent;
 
 class Task extends Model
 {
     use HasFactory;
+
+    // protected $dispatchesEvents = [
+    //     'created' => TaskEvent::class,
+    //     'updated' => TaskEvent::class,
+    //     'deleted' => TaskEvent::class,
+    // ];
 
     protected $casts = [
         'due_at' => 'datetime',
@@ -40,6 +49,11 @@ class Task extends Model
         'complete_at_formatted',
         'today_list'
     ];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 
     public function lists()
     {

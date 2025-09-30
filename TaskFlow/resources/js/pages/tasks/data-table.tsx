@@ -41,28 +41,27 @@ import { DataTablePagination } from "@/components/data-table-pagination"
 import { DataTableViewOptions } from "@/components/data-table-view-options"
 import { ListTodo, CirclePlus } from "lucide-react"
 import { tasksCreate, todoListCreate, todoListIndex } from "@/routes"
-import { Form, Link } from "@inertiajs/react"
+import { Form, Link, usePage } from "@inertiajs/react"
 import { Label } from "@/components/ui/label"
 import InputError from "@/components/input-error"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import StatusFilter from "./status-filter"
 import { Checkbox } from "@/components/ui/checkbox"
 import TodoListController from "@/actions/App/Http/Controllers/TodoListController"
+// import { useEchoNotification } from "@laravel/echo-react"
+// import { TaskStatusUpdateNotification } from "@/layouts/app-layout"
+// import { Task } from "."
 
 interface DataTableProps<TData, TValue> {
     columns: ColumnDef<TData, TValue>[]
     data: TData[]
     enableRowSelection?: (row: Row<TData>) => boolean;
-    flash?: {
-        showDialog?: boolean;
-    };  
 }
 
 export function DataTable<TData, TValue>({
     columns,
     data,
-    enableRowSelection = () => true,
-    flash    
+    enableRowSelection = () => true,   
 }: DataTableProps<TData, TValue>) {
     const [sorting, setSorting] = React.useState<SortingState>([])
     const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([])
@@ -73,8 +72,37 @@ export function DataTable<TData, TValue>({
     });
     const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({
         status: false, // 👈 hidden by default
+        id: false
     })
     const [rowSelection, setRowSelection] = React.useState({})
+
+    // const [tasks, setTasks] = React.useState<TData[]>(data)
+    // const { props: inertiaProps } = usePage();
+    // const { auth } = inertiaProps;
+    // const userId = auth?.user?.id;
+
+    // useEchoNotification<TaskStatusUpdateNotification>(
+    //     `App.Models.User.${userId}`,
+    //     (notification) => {
+    //         //search for task with same id and update it
+    //         const statusFormatted = notification.task_status === 'urgent' ? 'Urgent' : 'Overdue';
+    //         console.log(notification.task_id)
+    //         const taskIndex = tasks.findIndex(task => task.id === notification.task_id);
+            
+    //         if(taskIndex !== -1)
+    //         {
+    //             const updatedTasks = [...data];
+    //             updatedTasks[taskIndex] = {
+    //                 ...updatedTasks[taskIndex],
+    //                 status: notification.task_status,
+    //                 //capitalize first letter
+    //                 status_formatted: statusFormatted
+    //             };
+    //             setTasks(updatedTasks);
+    //         }
+
+    //     },
+    // );
 
     const table = useReactTable({
         data,
@@ -121,15 +149,15 @@ export function DataTable<TData, TValue>({
         }
       }, [pagination.pageIndex, pagination.pageSize, data.length]);
 
-    const showDialog = flash?.showDialog ?? false
-    const [open, setOpen] = React.useState(false)
+    // const showDialog = flash?.showDialog ?? false
+    // const [open, setOpen] = React.useState(false)
 
-    React.useEffect(() => {
-        if (flash?.showDialog) {
-            setOpen(true)
-            flash.showDialog = false
-        }
-    }, [flash?.showDialog])
+    // React.useEffect(() => {
+    //     if (flash?.showDialog) {
+    //         setOpen(true)
+    //         flash.showDialog = false
+    //     }
+    // }, [flash?.showDialog])
 
     // const { data, setData, post, processing, errors } = useForm({
     //     title: task.title ?? '',

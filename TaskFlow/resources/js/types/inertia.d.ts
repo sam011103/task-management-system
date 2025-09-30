@@ -7,5 +7,12 @@ declare module '@inertiajs/core' {
       error?: string;
       showDialog?: boolean;
     };
+    auth?: {
+      user?: {
+        id: number;
+        name: string;
+        email: string;
+      } | null;
+    }
   }
 }
