@@ -1,0 +1,59 @@
+name: Deployment
+
+push:
+    branches:
+      - develop
+      - master
+  pull_request:
+    branches:
+      - develop
+      - master
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Node.js
+      uses: actions/setup-node@v2
+      with:
+        node-version: '22'
+
+    - name: Install dependencies
+      run: npm install
+    - name: Build project
+      run: npm run build
+
+    - name: Deploy to Docker Hub
+      env:
+        DOCKER_HUB_USERNAME: ${{ secrets.DOCKER_HUB_USERNAME }}
+        DOCKER_HUB_ACCESS_TOKEN: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+      run: |
+        echo $DOCKER_HUB_ACCESS_TOKEN | docker login -u $DOCKER_HUB_USERNAME --password-stdin
+        docker build -t $DOCKER_HUB_USERNAME/taskflow:latest .
+        docker push $DOCKER_HUB_USERNAME/taskflow:latest
+        
+    - name: Run Docker Container
+      run: |
+        docker run -d -p 3000:3000 --name taskflow $DOCKER_HUB_USERNAME/taskflow:latest
+
+    - name: Verify Deployment
+      run: |
+        sleep 10
+        curl -f http://localhost:3000 || exit 1
+
+    - name: Clean up
+      run: |
+        docker stop taskflow
+        docker rm taskflow
+        docker logout
+
+    - name: Notify Deployment Success
+      if: success()
+      run: echo "Deployment succeeded!"
+
+    - name: Notify Deployment Failure
+      if: failure()
+      run: echo "Deployment failed!"
+

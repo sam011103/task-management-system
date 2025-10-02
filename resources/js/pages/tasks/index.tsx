@@ -41,7 +41,7 @@ export default function Index({tasks}: {tasks: Task[]}) {
     useEcho<TaskEvent>(
         `user.${userId}`,
         'TaskEvent',
-        (e) => {
+        () => {
             router.reload({ replace: true });
         },
     );

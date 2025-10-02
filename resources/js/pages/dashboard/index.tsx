@@ -57,14 +57,14 @@ export default function Index({stats, chartData, deadlines, todayList}: Props) {
     useEcho(
         `user.${userId}`,
         "TaskEvent",
-        (e) => {
+        () => {
             router.reload({ replace: true });
         },
     );
 
     const totalTasks = React.useMemo(() => {
         return chartData.reduce((acc, curr) => acc + curr.tasks, 0)
-    }, [])
+    }, [chartData]);
 
 
     return (
