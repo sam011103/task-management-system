@@ -21,6 +21,12 @@ jobs:
       with:
         node-version: '22'
 
+    - name: Install composer
+      uses: php-actions/composer@v6
+      with:
+        php-version: '8.4'
+        composer-options: '--no-interaction --prefer-dist --optimize-autoloader'
+        
     - name: Install dependencies
       run: npm install
     - name: Build project

@@ -193,7 +193,7 @@ export const columns: ColumnDef<Task>[] = [
         header: ({ column }) => (
             <DataTableColumnHeader column={column} title="Progress" />
         ),
-        cell: ({ row, getValue }) => {
+        cell: ({ getValue }) => {
             const value = getValue<number>() // progress as number
             return (
               <div className="flex items-center gap-2">

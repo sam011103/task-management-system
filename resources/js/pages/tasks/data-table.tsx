@@ -58,7 +58,7 @@ interface DataTableProps<TData, TValue> {
     enableRowSelection?: (row: Row<TData>) => boolean;
 }
 
-export function DataTable<TData, TValue>({
+export function DataTable<TData extends { id: string | number }, TValue>({
     columns,
     data,
     enableRowSelection = () => true,   
@@ -130,11 +130,11 @@ export function DataTable<TData, TValue>({
     const selectedIds = table
         .getSelectedRowModel()
         .rows
-        .map(row => (row.original as any).id)
+        .map(row => row.original.id)
 
     React.useEffect(() => {
         table.setPageIndex(0)
-        }, [columnFilters])
+        }, [columnFilters, table])
 
     React.useEffect(() => {
         localStorage.setItem('tasksPageIndex', pagination.pageIndex.toString());

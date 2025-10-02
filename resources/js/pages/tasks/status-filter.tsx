@@ -34,7 +34,7 @@ export default function StatusFilter({ column }: StatusFilterProps) {
     if (!column.getFilterValue()) {
       column.setFilterValue([...statuses]);
     }
-  }, [column]);
+  }, [column, statuses]);
 
   const toggleStatus = (status: string) => {
     if (value.includes(status)) {
