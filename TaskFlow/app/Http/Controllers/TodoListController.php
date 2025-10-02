@@ -14,10 +14,9 @@ class TodoListController extends Controller
     {
         $list = TodoList::with(['tasks' => function ($query) {
             $query->orderBy('list_task.order');
-        }])->firstOrCreate([
-            'user_id' => auth()->id(),
-            'date'    => now()->toDateString(),
-        ]);
+        }])->where('user_id', auth()->id())
+            ->where('date', today())
+            ->first();
 
         // dd($list);
         return Inertia::render('todo-list/index', [
@@ -154,7 +153,7 @@ class TodoListController extends Controller
         }
         elseif($list->completed_count === $list->task_count)
         {
-            $list->status = 3; //completed
+            $list->status = 2; //completed
         }
 
         $list->save();

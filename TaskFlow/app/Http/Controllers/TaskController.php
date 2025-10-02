@@ -69,7 +69,7 @@ class TaskController extends Controller
         $todayList = TodoList::with(['tasks' => function($query) {
             $query->select('tasks.id', 'tasks.title', 'tasks.progress');
         }])->where('user_id', $userId)
-          ->where('date', now()->toDateString())
+          ->where('date', today())
           ->first();
 
         return Inertia::render('dashboard/index',[

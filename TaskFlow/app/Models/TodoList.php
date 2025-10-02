@@ -24,4 +24,9 @@ class TodoList extends Model
             ->withTimestamps();
             // ->orderBy('pivot_order');
     }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }

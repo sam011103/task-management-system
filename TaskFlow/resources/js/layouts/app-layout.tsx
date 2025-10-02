@@ -5,6 +5,7 @@ import { usePage } from '@inertiajs/react';
 import { toast, Toaster } from "sonner";
 import { useEcho } from "@laravel/echo-react";
 import { Task } from '@/pages/tasks';
+import { toastWithSound } from '@/lib/utils';
 
 interface AppLayoutProps {
   children: ReactNode;
@@ -21,10 +22,10 @@ export default function AppLayout({ children, breadcrumbs, ...props }: AppLayout
 
   useEffect(() => {
     if (flash?.success) {
-      toast.success(flash.success);
+      toastWithSound("success", flash.success);
     }
     if (flash?.error) {
-      toast.error(flash.error);
+      toastWithSound("error", flash.error);
     }
   }, [flash]);
 
@@ -34,27 +35,26 @@ export default function AppLayout({ children, breadcrumbs, ...props }: AppLayout
     `user.${userId}`,
     'TaskEvent',
     (e) => {
-        if(e.task.status === 'urgent')
-        {
-          toast.warning(<>
-            Urgent Task! <br />
-            {e.task.title} <br />
-          </>, {
-            description: 'Please complete this task by ' + e.task.due_at_formatted + '.',
-            duration: 6000,
-            icon: '⚡',
-          })
-        }
-        else if(e.task.status === 'overdue')
-        {
-          toast.error(<>
-            Overdue Task! <br />
-            {e.task.title}
-          </>, {
-            duration: 6000,
-            icon: '⏰',
-          })
-        }
+		let message: ReactNode = "";
+		let description: "";
+		if(e.task.status === 'urgent')
+		{
+			message = (<>
+				Urgent Task! <br />
+				{e.task.title} <br />
+				</>);
+			description = 'Please complete this task by ' + e.task.due_at_formatted + '.';
+			toastWithSound("warning", message, description);
+		}
+		else if(e.task.status === 'overdue')
+		{
+			message = (<>
+				Overdue Task! <br />
+				{e.task.title}
+				</>);
+			description = 'This task was due on ' + e.task.due_at_formatted + '.';
+			toastWithSound("error", message, description);
+		}
     },
   );
 

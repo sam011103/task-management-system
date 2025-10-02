@@ -40,7 +40,13 @@ export default function Index({list}: Props) {
             <div className="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-2 sm:p-4">
                 <Card className="border-none shadow-none">
                     <CardHeader className="flex-row items-center px-0 sm:px-6">
-                        <CardTitle>Todo List ({list.date}) { list.task_count > 0 && `(${list.completed_count}/${list.task_count})`}</CardTitle>
+                        {
+                            list ? (
+                                <CardTitle>Todo List ({list.date}) { list.task_count > 0 && `(${list.completed_count}/${list.task_count})`}</CardTitle>
+                            ):(
+                                <CardTitle>Todo List</CardTitle>
+                            )
+                        }
                     </CardHeader>
                     <CardContent className="px-0 sm:px-6">
                         <Table className='rounded-md overflow-hidden'>
@@ -61,7 +67,7 @@ export default function Index({list}: Props) {
                             </TableHeader>
                             <TableBody>
                             {
-                                (!list.tasks || list?.tasks?.length === 0) ? 
+                                (!list || list?.tasks?.length === 0) ? 
                                     <TableRow>
                                         <TableCell colSpan={7} className="text-center">
                                             No tasks in the list
