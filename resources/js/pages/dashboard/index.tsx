@@ -27,7 +27,7 @@ interface ChartItem {
 
 interface DeadlineItem {
     title: string,
-    due_date: string
+    due_at_formatted: string
 }
 
 interface Props extends PageProps {
@@ -160,7 +160,7 @@ export default function Index({stats, chartData, deadlines, todayList}: Props) {
                                                 <TableRow key={index}>
                                                     <TableCell className='w-[20px]'>{index + 1}.</TableCell>
                                                     <TableCell className='truncate'>{deadline.title}</TableCell>
-                                                    <TableCell className='w-[190px]'>{new Date(deadline.due_date).toLocaleString('en-GB', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit', hour12: true })}</TableCell>
+                                                    <TableCell className='w-[190px]'>{deadline.due_at_formatted}</TableCell>
                                                 </TableRow>
                                             ))
                                         }
