@@ -15,8 +15,7 @@ jobs:
         options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
         env:
           MYSQL_DATABASE: taskflow
-          MYSQL_USER: ${ secrets.DB_USERNAME }
-          MYSQL_PASSWORD: ${ secrets.DB_PASSWORD }
+          MYSQL_ROOT_PASSWORD: ${{ secrets.MYSQL_ROOT_PASSWORD }}
         ports:
           - 3306:3306
         
