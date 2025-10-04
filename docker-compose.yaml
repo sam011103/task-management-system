@@ -31,7 +31,7 @@ services:
 
   app:
     image: sam011103/taskflow:latest
-    container_name: taskflow
+    container_name: taskflow_app
     volumes:
       - .:/var/www/html
     environment:
@@ -41,7 +41,7 @@ services:
       - "9000"
     command: |
       sh -c "
-        php artisan migrate --force &&
+        php artisan migrate:fresh --force &&
         php artisan db:seed --force &&
         php artisan config:cache &&
         php-fpm
@@ -55,20 +55,33 @@ services:
   queue:
     image: sam011103/taskflow:latest
     container_name: taskflow_queue
-    command: php artisan queue:work --tries=3 --daemon
+    command: >
+      sh -c "
+        echo 'Waiting for MySQL...' &&
+        until nc -z -v -w30 mysql 3306; do
+          echo 'Still waiting for MySQL...';
+          sleep 5;
+        done;
+        echo 'MySQL is ready!';
+        php artisan queue:work --tries=3 --timeout=90 --verbose
+      "
     depends_on:
+      - app
       - mysql
     networks:
       - webnet
+    restart: unless-stopped
   
   scheduler:
     image: sam011103/taskflow:latest
     container_name: taskflow_scheduler
     command: php artisan schedule:work
     depends_on:
+      - app
       - mysql
     networks:
       - webnet
+    restart: unless-stopped
 
 networks:
   webnet:
