@@ -1,18 +1,16 @@
 FROM php:8.4-fpm-alpine
 
-RUN apk update && apk install -y \
-    build-essential \
+# Install required packages
+RUN apk add --no-cache \
+    bash \
+    build-base \
     libpng-dev \
-    libjpeg62-turbo-dev \
-    libfreetype6-dev \
-    locales \
+    libjpeg-turbo-dev \
+    freetype-dev \
     zip \
-    jpegoptim optipng pngquant gifsicle \
-    vim \
-    unzip \
     git \
     curl \
-    libonig-dev \
+    oniguruma-dev \
     libxml2-dev \
     libzip-dev \
     nodejs \

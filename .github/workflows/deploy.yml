@@ -8,43 +8,10 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-
-    services:
-      mysql:
-        image: mysql:8.0
-        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
-        env:
-          MYSQL_DATABASE: taskflow
-          MYSQL_ROOT_PASSWORD: ${{ secrets.MYSQL_ROOT_PASSWORD }}
-        ports:
-          - 3306:3306
         
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
-
-      - name: Setup PHP
-        uses: shivammathur/setup-php@v2
-        with:
-          php-version: '8.4'
-          extensions: mbstring, pdo_mysql, bcmath
-          ini-values: post_max_size=256M, max_execution_time=300
-
-      - name: Install Composer dependencies
-        run: composer install --prefer-dist --no-progress --optimize-autoloader --no-dev
-
-      - name: Setup .env file
-        run: |
-          cp .env.example .env
-          php artisan key:generate
-
-      - name: Run database migrations
-        run: php artisan migrate --force
-
-      - name: Install Node.js dependencies
-        run: |
-          npm install
-          npm run build
 
       - name: Login to Docker Hub
         uses: docker/login-action@v3
