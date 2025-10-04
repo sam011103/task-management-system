@@ -30,5 +30,3 @@ RUN composer install --no-dev --optimize-autoloader --no-scripts --prefer-dist
 RUN php artisan key:generate
 
 RUN npm install && npm run build
-
-RUN php artisan optimize:clear
