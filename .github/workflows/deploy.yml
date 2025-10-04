@@ -31,7 +31,7 @@ jobs:
           ini-values: post_max_size=256M, max_execution_time=300
 
       - name: Install Composer dependencies
-        run: composer install --prefer-dist --no-progress -optimize-autoloader
+        run: composer install --prefer-dist --no-progress --optimize-autoloader --no-dev
 
       - name: Setup .env file
         run: |
