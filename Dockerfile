@@ -1,6 +1,6 @@
-FROM php:8.4-fpm
+FROM php:8.4-fpm-alpine
 
-RUN apt-get update && apt-get install -y \
+RUN apk update && apk install -y \
     build-essential \
     libpng-dev \
     libjpeg62-turbo-dev \
@@ -19,15 +19,17 @@ RUN apt-get update && apt-get install -y \
     npm \
     && docker-php-ext-install pdo pdo_mysql mbstring exif pcntl bcmath gd zip
 
-COPY --from=composer:2.6 /usr/bin/composer /usr/bin/composer
+COPY --from=composer:2.7 /usr/bin/composer /usr/bin/composer
 
 WORKDIR /var/www/html
 
-COPY composer.json composer.lock ./
+COPY . .
+
+COPY .env.example .env
 
 RUN composer install --no-dev --optimize-autoloader --no-scripts --prefer-dist
 
-COPY . .
+RUN php artisan key:generate
 
 RUN npm install && npm run build
 
