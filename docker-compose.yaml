@@ -39,11 +39,36 @@ services:
       - DEBUG=False
     expose:
       - "9000"
+    command: |
+      sh -c "
+        php artisan migrate --force &&
+        php artisan db:seed --force &&
+        php artisan config:cache &&
+        php-fpm
+      "
     networks:
       - webnet
     restart: unless-stopped
     depends_on:
       - mysql
+  
+  queue:
+    image: sam011103/taskflow:latest
+    container_name: taskflow_queue
+    command: php artisan queue:work --tries=3 --daemon
+    depends_on:
+      - mysql
+    networks:
+      - webnet
+  
+  scheduler:
+    image: sam011103/taskflow:latest
+    container_name: taskflow_scheduler
+    command: php artisan schedule:work
+    depends_on:
+      - mysql
+    networks:
+      - webnet
 
 networks:
   webnet:

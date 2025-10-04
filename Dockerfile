@@ -30,9 +30,3 @@ RUN composer install --no-dev --optimize-autoloader --no-scripts --prefer-dist
 RUN php artisan key:generate
 
 RUN npm install && npm run build
-
-RUN php artisan migrate --force
-
-RUN php artisan db:seed --force
-
-CMD ["php-fpm"]
