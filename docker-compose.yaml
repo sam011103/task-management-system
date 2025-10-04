@@ -12,6 +12,21 @@ services:
     networks:
       - webnet
     restart: unless-stopped
+  
+  mysql:
+    image: mysql:8.0
+    container_name: mysql_container
+    environment:
+      MYSQL_ROOT_PASSWORD: root_password
+      MYSQL_DATABASE: taskflow
+      MYSQL_USER: taskflow_user
+      MYSQL_PASSWORD: taskflow_password
+    ports:
+      - "3306:3306"
+    networks:
+      - webnet
+    restart: unless-stopped
+
   app:
     image: sam011103/taskflow:latest
     container_name: taskflow
