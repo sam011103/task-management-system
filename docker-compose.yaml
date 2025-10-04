@@ -32,8 +32,6 @@ services:
   app:
     image: sam011103/taskflow:latest
     container_name: taskflow_app
-    volumes:
-      - .:/var/www/html
     environment:
       - PORT=9000
       - DEBUG=False

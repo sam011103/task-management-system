@@ -17,12 +17,12 @@ class TaskFactory extends Factory
      */
     public function definition(): array
     {
-        $time = $this->faker->numberBetween(30, 300);
-        $progress = $this->faker->numberBetween(0, 100);
+        $time = fake()->numberBetween(30, 300);
+        $progress = fake()->numberBetween(0, 100);
         $timeRemaining = $time - $progress/100 * $time;
         $timeRemaining = round($timeRemaining);
 
-        $dueAt = $this->faker->optional()->dateTimeBetween('-1 month', '+1 month');
+        $dueAt = fake()->optional()->dateTimeBetween('-1 month', '+1 month');
         if ($dueAt) {
             $dueAt = Carbon::instance($dueAt); // convert only if not null
         }
@@ -59,11 +59,11 @@ class TaskFactory extends Factory
         }
 
         return [
-            'title' => ucfirst($this->faker->bs),
-            'description' => $this->faker->optional()->paragraph,
+            'title' => ucfirst(fake()->bs),
+            'description' => fake()->optional()->paragraph,
             'time_estimate' => $time,
             'time_remaining' => $timeRemaining,
-            'importance_level' => $this->faker->randomElement(['very low', 'low', 'medium', 'high', 'very high']),
+            'importance_level' => fake()->randomElement(['very low', 'low', 'medium', 'high', 'very high']),
             'due_at' => $dueAt,
             'status' => $status,
             'progress' => $progress,
