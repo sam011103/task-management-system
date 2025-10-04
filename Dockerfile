@@ -31,6 +31,4 @@ RUN php artisan key:generate
 
 RUN npm install && npm run build
 
-EXPOSE 9000
-
 CMD ["php-fpm"]
