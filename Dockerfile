@@ -25,7 +25,7 @@ COPY . .
 
 COPY .env.example .env
 
-RUN composer install --no-dev --optimize-autoloader --prefer-dist
+RUN composer install --optimize-autoloader --no-scripts --prefer-dist
 
 RUN php artisan key:generate
 
