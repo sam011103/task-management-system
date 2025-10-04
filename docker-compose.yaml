@@ -23,6 +23,8 @@ services:
       MYSQL_PASSWORD: taskflow_password
     ports:
       - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
     networks:
       - webnet
     restart: unless-stopped
@@ -40,7 +42,12 @@ services:
     networks:
       - webnet
     restart: unless-stopped
+    depends_on:
+      - mysql
 
 networks:
   webnet:
     driver: bridge
+
+volumes:
+  mysql_data:
