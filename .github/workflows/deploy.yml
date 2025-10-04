@@ -27,6 +27,6 @@ jobs:
           tags: sam011103/taskflow:latest
 
       - name: Pull containers and restart services
-         run: |
+        run: |
           docker compose -f docker-compose.yaml pull
           docker compose -f docker-compose.yaml up -d --remove-orphans
