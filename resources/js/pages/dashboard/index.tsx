@@ -96,19 +96,19 @@ export default function Index({stats, chartData, deadlines, todayList}: Props) {
                             <p className='text-4xl font-extrabold text-yellow-600 m-0'>{stats.urgent}</p>
                         </CardContent>
                     </Card>
-                    <Card className="h-full border-2 border-red-500 rounded-lg shadow-lg overflow-hidden bg-red-100">
+                    <Card className="h-full border-2 border-orange-500 rounded-lg shadow-lg overflow-hidden bg-orange-100">
                         <CardHeader>
-                            <CardTitle className='text-red-700 font-bold text-lg'>Overdue Tasks</CardTitle>
+                            <CardTitle className='text-orange-700 font-bold text-lg'>Overdue Tasks</CardTitle>
                         </CardHeader>
                         <CardContent className='flex justify-center'>
-                            <p className='text-4xl font-extrabold text-red-600 m-0'>{stats.overdue}</p>
+                            <p className='text-4xl font-extrabold text-orange-600 m-0'>{stats.overdue}</p>
                         </CardContent>
                     </Card>
                 </div>
                 <div className="grid auto-rows-min gap-4 md:grid-cols-2 md:grid-rows-2">
-                    <Card className="border-2 rounded-lg shadow-lg overflow-hidden md:col-start-1 md:row-start-1">
+                    <Card className="border-2 rounded-lg shadow-lg overflow-hidden md:col-start-1 md:row-start-1 bg-orange-50">
                         <CardHeader>
-                            <CardTitle className='font-bold text-lg'>
+                            <CardTitle className='font-bold text-lg text-blue-600'>
                                 Today's Todo List {todayList?.tasks?.length > 0 ? `(${todayList.completed_count}/${todayList.task_count})` : ""}
                             </CardTitle>
                         </CardHeader>
@@ -123,9 +123,8 @@ export default function Index({stats, chartData, deadlines, todayList}: Props) {
                                     {
                                         todayList?.tasks?.map((task, index) => (
                                         <TableRow key={task.id}>
-                                            <TableCell className='w-[20px]'>{index + 1}.</TableCell>
-                                            <TableCell className='truncate'>{task.title}</TableCell>
-                                            <TableCell className='w-[150px]'></TableCell>
+                                            <TableCell className='w-[40px]'>{index + 1}.</TableCell>
+                                            <TableCell className={`truncate ${task.progress === 100 ? 'line-through text-gray-500' : ''}`}>{task.title}</TableCell>
                                             <TableCell className='w-[40px]'>
                                                 {task.progress === 100 ? <SquareCheck /> : null}
                                             </TableCell>
@@ -143,9 +142,9 @@ export default function Index({stats, chartData, deadlines, todayList}: Props) {
                             
                         </CardContent>
                     </Card>  
-                    <Card className="border-2 rounded-lg shadow-lg overflow-hidden md:col-start-1 md:row-start-2">
+                    <Card className="border-2 rounded-lg shadow-lg overflow-hidden md:col-start-1 md:row-start-2 bg-amber-50">
                         <CardHeader>
-                            <CardTitle className='font-bold text-lg'>Upcoming Deadlines</CardTitle>
+                            <CardTitle className='font-bold text-lg text-blue-600'>Upcoming Deadlines</CardTitle>
                         </CardHeader>
                         <CardContent>
                         {deadlines.length === 0 ? (
@@ -158,9 +157,9 @@ export default function Index({stats, chartData, deadlines, todayList}: Props) {
                                         {
                                             deadlines.map((deadline, index) => (
                                                 <TableRow key={index}>
-                                                    <TableCell className='w-[20px]'>{index + 1}.</TableCell>
+                                                    <TableCell className='w-[40px]'>{index + 1}.</TableCell>
                                                     <TableCell className='truncate'>{deadline.title}</TableCell>
-                                                    <TableCell className='w-[190px]'>{deadline.due_at_formatted}</TableCell>
+                                                    <TableCell className='w-[160px] text-red-500 font-bold'>{deadline.due_at_formatted}</TableCell>
                                                 </TableRow>
                                             ))
                                         }
@@ -175,9 +174,9 @@ export default function Index({stats, chartData, deadlines, todayList}: Props) {
                         
                         </CardContent>
                     </Card> 
-                    <Card className="h-full border-2 rounded-lg shadow-lg overflow-hidden md:row-span-2">
+                    <Card className="h-full border-2 rounded-lg shadow-lg overflow-hidden md:row-span-2 bg-teal-50">
                         <CardHeader>
-                            <CardTitle className='font-bold text-lg'>Task Overview</CardTitle>
+                            <CardTitle className='font-bold text-lg text-blue-600'>Task Overview</CardTitle>
                         </CardHeader>
                         <CardContent className='h-full'>
                             {

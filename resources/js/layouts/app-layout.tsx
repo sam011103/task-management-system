@@ -2,7 +2,7 @@ import AppLayoutTemplate from '@/layouts/app/app-sidebar-layout';
 import { type BreadcrumbItem } from '@/types';
 import { type ReactNode, useEffect } from 'react';
 import { usePage } from '@inertiajs/react';
-import { toast, Toaster } from "sonner";
+import { Toaster } from "sonner";
 import { useEcho } from "@laravel/echo-react";
 import { Task } from '@/pages/tasks';
 import { toastWithSound } from '@/lib/utils';
