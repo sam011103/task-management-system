@@ -51,7 +51,7 @@ export default function Index({tasks}: {tasks: Task[]}) {
             <div className="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-2 sm:p-4">
                 <Card className="border-none shadow-none">
                     <CardHeader className="flex-row items-center justify-between px-0 sm:px-6">
-                        <CardTitle>Tasks List</CardTitle>
+                        <CardTitle>Tasks</CardTitle>
                     </CardHeader>
                     <CardContent className="px-0 sm:px-6">
                         <CardDescription className="font-bold">Note: Select tasks to add to today's list.</CardDescription>

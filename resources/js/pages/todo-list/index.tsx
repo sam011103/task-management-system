@@ -12,6 +12,8 @@ import DeleteIcon from '@/components/icons/delete-icon';
 import { tasksEdit, taskRemoveFromList } from '@/routes';
 import { Task } from '../tasks';
 import { StatusBadge } from '@/components/status-badge';
+import { Button } from '@/components/ui/button';
+import { SquareCheck } from 'lucide-react';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -32,89 +34,72 @@ interface Props extends PageProps {
     list: TodoList;
 }
 
-export default function Index({list}: Props) {
+export default function Index({ list }: Props) {
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Todo List" />
-            
+
             <div className="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-2 sm:p-4">
                 <Card className="border-none shadow-none">
                     <CardHeader className="flex-row items-center px-0 sm:px-6">
                         {
                             list ? (
-                                <CardTitle>Todo List ({list.date}) { list.task_count > 0 && `(${list.completed_count}/${list.task_count})`}</CardTitle>
-                            ):(
-                                <CardTitle>Todo List</CardTitle>
+                                <>
+                                    <CardTitle>Todo List ({list.date}) {list.task_count > 0 && `(${list.completed_count}/${list.task_count})`}</CardTitle>
+                                    <div className='flex ml-auto gap-2'>
+                                        <Button variant='secondary' size="sm" className='mr-2' onClick={() =>{}}>
+                                            Edit
+                                        </Button>
+                                        <Button variant="destructive" size="sm" onClick={() =>{}}>
+                                            Clear List
+                                        </Button>
+                                    </div>
+                                </>
+                            ) : (
+                                <CardTitle>Todo List ({new Date().toISOString().split('T')[0]})</CardTitle>
                             )
                         }
                     </CardHeader>
                     <CardContent className="px-0 sm:px-6">
-                        <Table className='rounded-md overflow-hidden'>
-                            <TableHeader>
-                                <TableRow className="bg-gradient-to-r from-blue-500 to-teal-400">
-                                    <TableHead className='text-white'>No.</TableHead>
-                                    <TableHead className='text-white'>Title</TableHead>
-                                    <TableHead className='text-white'>Description</TableHead>
-                                    {/* <TableHead className='text-white'>Importance</TableHead> */}
-                                    {/* <TableHead>Status</TableHead>
-                                    <TableHead>Due At</TableHead> */}
-                                    {/* <TableHead>Time Estimate</TableHead> */}
-                                    <TableHead className='text-white'>Effort Left</TableHead>
-                                    <TableHead className='text-white'>Progress</TableHead>
-                                    {/* <TableHead>Priority Score</TableHead> */}
-                                    <TableHead className='text-white'>Actions</TableHead>
-                                </TableRow>
-                            </TableHeader>
-                            <TableBody>
-                            {
-                                (!list || list?.tasks?.length === 0) ? 
-                                    <TableRow>
-                                        <TableCell colSpan={7} className="text-center">
-                                            No tasks in the list
-                                        </TableCell>
-                                    </TableRow>
-                                :
-                                list?.tasks?.map((task, key) => (
-                                    <TableRow key={task.id} className="bg-white odd:bg-white even:bg-gray-100 hover:bg-blue-50 transition-colors items-center">
-                                        <TableCell className="font-medium">{key + 1}</TableCell>
-                                        <TableCell className='whitespace-normal leading-relaxed'>
-                                            <div className="flex items-start gap-2">
-                                                <span>
-                                                    {task.title}
-                                                </span>
-                                                <StatusBadge status={task.status} />
-                                            </div>
-                                        </TableCell>
-                                        <TableCell className='whitespace-normal leading-relaxed'>{task.description ? task.description : "-"}</TableCell>
-                                        {/* <TableCell>{task.importance_level_formatted}</TableCell> */}
-                                        {/* <TableCell>{item.task.status_formatted}</TableCell>
-                                        <TableCell>{item.task.due_at_formatted}</TableCell> */}
-                                        {/* <TableCell>{item.task.time_estimate_formatted}</TableCell> */}
-                                        <TableCell>{task.time_remaining_formatted}</TableCell>
-                                        <TableCell>
-                                            <div className="flex items-center gap-2">
-                                                <Root className="relative h-4 w-20 overflow-hidden rounded-full bg-gray-200">
-                                                <Indicator
-                                                    className="h-full bg-gradient-to-r from-green-500 to-green-600 transition-all duration-500 ease-in-out"
-                                                    style={{ width: task.progress > 0 ? `${task.progress}%` : "0%" }}
-                                                />
-                                                </Root>
-                                                <span>{task.progress}%</span>
-                                            </div>
-                                        </TableCell>
-                                        {/* <TableCell>{item.priority_score}</TableCell> */}
-                                    
-                                        <TableCell className="align-middle">
-                                            <div className="flex gap-2">
-                                                <EditIcon action={tasksEdit(task).url} disabled={task.progress === 100}/>
-                                                <DeleteIcon action={taskRemoveFromList(task.id).url}/>
-                                            </div>
-                                        </TableCell>
-                                    </TableRow>
-                                ))
-                            }
-                            </TableBody>
-                        </Table>
+                        {
+                            (!list || list.tasks.length === 0) ? (
+                                <p>No tasks in the list.</p>
+                            ) : null
+                        }
+                        <ul role="list">
+                            {list?.tasks?.map((task) => (
+                                <Card key={task.id} className="flex-row gap-x-6 p-5 items-center mb-2 justify-start">
+                                    <div className="flex-col min-w-0 gap-x-4 w-1/2">
+                                        <div className="min-w-0 flex-row">
+                                            <p className="text-sm/6 font-semibold text-gray-900">{task.title}</p>
+                                            <p className="mt-1 text-xs/5 text-gray-500">{task.description}</p>
+                                        </div>
+                                    </div>
+                                    <div className='hidden sm:flex items-center gap-2 w-[250px]'>
+                                        <Root className="relative h-4 w-20 overflow-hidden rounded-full bg-gray-200">
+                                            <Indicator
+                                                className="h-full bg-gradient-to-r from-green-500 to-green-600 transition-all duration-500 ease-in-out"
+                                                style={{ width: task.progress > 0 ? `${task.progress}%` : "0%" }}
+                                            />
+                                        </Root>
+                                        <span className='text-sm'>{task.progress}%</span>
+                                        <p className='text-sm'>({task.time_remaining_formatted})</p>
+                                    </div>
+                                    <div className='w-[80px]'>
+                                        <p className='text-sm'>12.00 pm</p>
+                                    </div>
+                                    <div className="ml-auto w-25">
+                                        {
+                                            task.progress < 100 ? (
+                                                <Button size="sm" className='mx-auto'>Complete</Button>
+                                            ) : (
+                                                <SquareCheck size={36} className='mx-auto' />
+                                            )
+                                        }
+                                    </div>
+                                </Card>
+                            ))}
+                        </ul>
                     </CardContent>
                 </Card>
                 {/* <table className="min-w-full border border-gray-300 rounded-lg">

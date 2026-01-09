@@ -35,7 +35,6 @@ class PriorityService
                 $score += 40;
             } elseif ($timeLeft < $timeRemaining) {
                 // Not enough time left compared to what’s needed
-                dd("Hi");
                 $score += 25;
             }
         }

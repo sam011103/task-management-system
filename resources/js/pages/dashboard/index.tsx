@@ -109,7 +109,7 @@ export default function Index({stats, chartData, deadlines, todayList}: Props) {
                     <Card className="border-2 rounded-lg shadow-lg overflow-hidden md:col-start-1 md:row-start-1 bg-orange-50">
                         <CardHeader>
                             <CardTitle className='font-bold text-lg text-blue-600'>
-                                Today's Todo List {todayList?.tasks?.length > 0 ? `(${todayList.completed_count}/${todayList.task_count})` : ""}
+                                Todo List ({new Date().toISOString().split('T')[0]}) {todayList?.tasks?.length > 0 ? `(${todayList.completed_count}/${todayList.task_count})` : ""}
                             </CardTitle>
                         </CardHeader>
                         <CardContent>
